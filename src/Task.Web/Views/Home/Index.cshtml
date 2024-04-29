@@ -1,0 +1,140 @@
+﻿@using Task.Application.Contracts
+@using Task.Domain;
+@using Task.Domain.Entities
+@using Task.Application.Extensions
+
+@model Grid<Employee>;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container-lg mt-1">
+    <form action="/" method="post" enctype="multipart/form-data" class="mb-3">
+        <label for="formFile" typeof="file" class="form-label">Upload dataset</label>
+
+        <div class="input-group">
+            <input class="form-control" type="file" id="formFile" name="formFile" accept="text/csv" required />
+            <button class="input-group-text d-inline-block btn btn-primary">
+                <span class="material-symbols-outlined w-25"file_upload></span>
+                Upload
+            </button>
+        </div>
+    </form>
+
+    @if (ViewData[Constants.ErrorViewData] is not  null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @ViewData[Constants.ErrorViewData]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (ViewData[Constants.MessageViewData] is not null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @ViewData[Constants.MessageViewData]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="input-group w-25 mb-2">
+        <input class="form-control" type="text" id="search" name="search" accept="text/csv" required />
+        <button class="input-group-text d-inline-block btn btn-primary" onclick="Search()">
+            <span class="material-symbols-outlined w-25"></span>
+            Search
+        </button>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover" style="width: 150% !important;">
+            <thead id="tableHead" class="table-light border-2 border-primary">
+                <tr>
+                    <th class="position-sticky fixed-top" scope="col">#</th>
+                    @{
+                        var columnNames = CommonExtensions.GetColumnNames<Employee>();
+                    }
+                    @for (int i = 1; i < columnNames.Count; i++)
+                    {
+                        <th scope="col" style="min-width: 100px; width: min-content">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">@columnNames[i]</span>
+
+                                @if (Model.Parameters.Order is not null)
+                                {
+                                    @if (Model.Parameters.Order.Ascending && Model.Parameters.Order.Property == columnNames[i])
+                                    {
+                                        <button class="btn btn-primary" type="button" onclick="SortByDescending('@columnNames[i]')" data-bs-toggle="sort">
+                                            <i class="bi bi-sort-up"></i>
+                                        </button>
+                                    }
+                                    else if (!Model.Parameters.Order.Ascending && Model.Parameters.Order.Property == columnNames[i])
+                                    {
+                                        <button type="button" class="btn btn-primary" onclick="SortByAscending('@columnNames[i]')" data-bs-toggle="sort">
+                                            <i class="bi bi-sort-down"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-primary" onclick="SortByAscending('@columnNames[i]')" data-bs-toggle="sort">
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        </th>
+                    }
+                    <th scope="col" class="position-sticky fixed-top">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">
+                                Actions
+                            </span>
+                            <button type="button" class="btn btn-primary disabled">
+                            </button>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+
+            @if (!Model.List.ListNullOrEmpty())
+            {
+                <tbody>
+                    @foreach ((Employee employee, int index) in Model.List.Select((employee, i) => new ValueTuple<Employee, int>(employee, i)))
+                    {
+                        <tr class="tableRow">
+                            <td class="position-sticky fixed-top shadow-none" style="background-color: #f1f1f1">@(index + 1)</td>
+                            <td>@employee.Payroll</td>
+                            <td>@employee.FirstName</td>
+                            <td>@employee.LastName</td>
+                            <td>@employee.DateOfBirth</td>
+                            <td>@employee.Telephone</td>
+                            <td>@employee.Mobile</td>
+                            <td>@employee.Address</td>
+                            <td>@employee.Address2</td>
+                            <td>@employee.PostCode</td>
+                            <td>@employee.Email</td>
+                            <td>@employee.StartDate</td>
+                            <td class="position-sticky fixed-top shadow-none" style="background-color: #f1f1f1">
+                                <div class="btn-group">
+                                    <a class="btn btn-primary" onclick="window.location=`/edit/@employee.Id`">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </a>
+                                    <button class="btn btn-danger" onclick="DeleteEmployeeById('@employee.Id')">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
+            else
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Employee table is empty
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+        </table>
+    </div>
+    <caption class="align-content-end">Records: @(Model.List.Count())</caption>
+</div>
+<script src="~/js/site.js"></script>

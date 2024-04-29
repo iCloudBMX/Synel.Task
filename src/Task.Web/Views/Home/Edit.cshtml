@@ -1,0 +1,83 @@
+﻿@using Task.Domain.Entities
+@model Employee
+@{
+    ViewData["title"] = "Edit | Employee";
+}
+
+@if (ViewData["Error"] is not null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @ViewData["Error"]
+    </div>
+}
+
+@if (Model is not null)
+{
+    <div class="container">
+        <div class="form-label">
+            <h1 class="md-3">Update employee @Model.FirstName @Model.LastName</h1>
+        </div>
+
+        <form action="/edit/@Model.Id" method="post">
+            <input class="form-control" hidden name="@nameof(Model.Id)" value="@Model.Id" />
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.Payroll)</span>
+                <input class="form-control" type="text" name="@nameof(Model.Payroll)" value="@Model.Payroll" required />
+            </div>
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.FirstName)</span>
+                <input class="form-control" type="text" name="@nameof(Model.FirstName)" value="@Model.FirstName" required />
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.LastName)</span>
+                <input class="form-control" type="text" name="@nameof(Model.LastName)" value="@Model.LastName" required />
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.DateOfBirth)</span>
+                <input class="form-control" type="text" name="@nameof(Model.DateOfBirth)" value="@Model.DateOfBirth" required />
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.Telephone)</span>
+                <input class="form-control" type="tel" name="@nameof(Model.Telephone)" value="@Model.Telephone" required />
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.Mobile)</span>
+                <input class="form-control" type="tel" name="@nameof(Model.Mobile)" value="@Model.Mobile" required />
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.Address)</span>
+                <input class="form-control" type="text" name="@nameof(Model.Address)" value="@Model.Address" required />
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.Address2)</span>
+                <input class="form-control" type="text" name="@nameof(Model.Address2)" value="@Model.Address2" required />
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.PostCode)</span>
+                <input class="form-control" type="text" name="@nameof(Model.PostCode)" value="@Model.PostCode" required />
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.Email)</span>
+                <input class="form-control" type="email" name="@nameof(Model.Email)" value="@Model.Email" required />
+            </div>
+
+            <div class="input-group mb-3 w-50">
+                <span class="input-group-text w-25">@nameof(Model.StartDate)</span>
+                <input class="form-control" type="text" name="@nameof(Model.StartDate)" value="@Model.StartDate" required />
+            </div>
+
+            <div class="form-group">
+                <a onclick="window.location = `/`" class="btn btn-secondary" data-bs-dismiss="modal">Close</a>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
+}
